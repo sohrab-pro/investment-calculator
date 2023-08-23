@@ -34,7 +34,7 @@ function App() {
 	};
 
 	return (
-		<div>
+		<>
 			<Header />
 			<Form onReset={resetForm} onFormSubmit={calculateHandler} />
 			{yearlyData.length === 0 ? (
@@ -42,7 +42,7 @@ function App() {
 			) : (
 				<Table initialInvestment={currentSavings} yearlyData={yearlyData} />
 			)}
-		</div>
+		</>
 	);
 }
 
