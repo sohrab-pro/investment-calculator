@@ -1,25 +1,49 @@
-import logo from './logo.svg';
-import './App.css';
+import React, { useState } from "react";
+import Form from "./components/Form.js";
+import Header from "./components/Header.js";
+import Table from "./components/Table.js";
 
 function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+	const [yearlyData, setYearlyData] = useState([]);
+	const [currentSavings, setCurrentSavings] = useState(0);
+	const calculateHandler = (userInput) => {
+		userInput.preventDefault();
+		let currentSavings = +userInput.target["current-savings"].value;
+		setCurrentSavings(currentSavings);
+		const yearlyContribution = +userInput.target["yearly-contribution"].value;
+		const expectedReturn = +userInput.target["expected-return"].value / 100;
+		const duration = +userInput.target["duration"].value;
+
+		const newYearlyData = [];
+		for (let i = 0; i < duration; i++) {
+			const yearlyInterest = currentSavings * expectedReturn;
+			currentSavings += yearlyInterest + yearlyContribution;
+			newYearlyData.push({
+				id: i + 1,
+				year: i + 1,
+				yearlyInterest: yearlyInterest,
+				savingsEndOfYear: currentSavings,
+				yearlyContribution: yearlyContribution,
+			});
+		}
+		setYearlyData(newYearlyData);
+	};
+
+	const resetForm = () => {
+		setYearlyData([]);
+	};
+
+	return (
+		<div>
+			<Header />
+			<Form onReset={resetForm} onFormSubmit={calculateHandler} />
+			{yearlyData.length === 0 ? (
+				<p style={{ textAlign: "center" }}>No Data available</p>
+			) : (
+				<Table initialInvestment={currentSavings} yearlyData={yearlyData} />
+			)}
+		</div>
+	);
 }
 
 export default App;
